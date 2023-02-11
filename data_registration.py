@@ -64,7 +64,7 @@ if action == "1":
                 code = input("Введите пин-код \n")
                 count = 0
                 while count < 4:
-                    if code.isdigit() and len(code) == 4:
+                    if code.isdigit() and len(code) == 4 or len(code) == 0:
                         cur.execute("""INSERT INTO users_data(
                                                 Login, Password, Code)
                                             VALUES(?, ?, ?)""", (login, password, code))
