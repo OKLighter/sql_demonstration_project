@@ -200,7 +200,7 @@ def select_sum():
             input_sum = int(input(text_for_input_sum))
         except ValueError:
             if count == 4:
-                print(f"Осталась две попытки")
+                print(f"Осталось две попытки")
             if count == 5:
                 print(f"Осталась одна попытка")
             if count == 6:
@@ -214,7 +214,7 @@ def select_sum():
             else:
                 print(text_sum_error)
                 if count == 4:
-                    print(f"Осталась две попытки")
+                    print(f"Осталось две попытки")
                 if count == 5:
                     print(f"Осталась одна попытка")
                 if count == 6:
