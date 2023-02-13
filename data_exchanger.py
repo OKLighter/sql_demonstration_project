@@ -125,29 +125,23 @@ class Check_Input_Value:
                     print(f"Осталась последняя попытка")
                 if count == 3:
                     print("Вы потратили все попытки, До свидания!")
-                    break
+                    exit()
                 second_value = input(text_input)
             else:
                 break
 
     @staticmethod
-    def check_sum_in_balance(sum_input, sum_balance, text_error, text_input):
-        """Метод для проверки на больше с тремя попытками"""
-        count = 0
-        while count < 4:
-            if float(sum_input) > float(sum_input):
-                print(sum_input)
-                print(sum_balance)
-                print(text_error)
-                count += 1
-                if count == 2:
-                    print(f"Осталась последняя попытка")
-                if count == 3:
-                    print("Вы потратили все попытки, До свидания!")
-                    break
-                sum_input = input(text_input)
-            else:
-                break
+    def counter_errors(count_cr):
+        """Метод информирует об оставшихся попытках, в случае их окончания выходит из программы"""
+
+        match count_cr:
+            case 1: print("Осталось две попытки")
+        match count_cr:
+            case 2: print("Осталась одна попытка")
+        match count_cr:
+            case 3:
+                print("Вы потратили все попытки, До свидания!")
+                exit()
 
 
 """Актуальный курс валюты"""
@@ -171,19 +165,13 @@ def select_currency():
     count = 0
     global choice_currency
     choice_currency = input(text_for_choice_currency)
-    while count < 7:
+    while count < 3:
         if choice_currency.isdigit() and 0 < int(choice_currency) < 4:
             break
         else:
             count += 1
-            if count == 5:
-                print("Осталось две попытки")
-            if count == 6:
-                print(f"Осталась одна попытка")
-            if count == 7:
-                print("Вы потратили все попытки, До свидания!")
-                exit()
-            choice_currency = (input(text_for_choice_currency))
+            Check_Input_Value.counter_errors(count)
+            choice_currency = input(text_for_choice_currency)
 
 
 """Выбор суммы"""
@@ -194,33 +182,21 @@ def select_sum():
     text_for_input_sum = "Какая сумма Вас интересует? \n"
     text_sum_error = "На вашем счету недостаточно средств, введите сумму меньше"
     count = 0
-    while count < 7:
+    while count < 3:
         try:
             global input_sum
             input_sum = int(input(text_for_input_sum))
         except ValueError:
-            if count == 4:
-                print(f"Осталось две попытки")
-            if count == 5:
-                print(f"Осталась одна попытка")
-            if count == 6:
-                print("Вы потратили все попытки, До свидания!")
-                exit()
             count += 1
+            Check_Input_Value.counter_errors(count)
         else:
             param = Requests_DB.select_all_users_with_params()
             if input_sum < param[int(choice_currency) - 1]:
                 break
             else:
                 print(text_sum_error)
-                if count == 4:
-                    print(f"Осталось две попытки")
-                if count == 5:
-                    print(f"Осталась одна попытка")
-                if count == 6:
-                    print("Вы потратили все попытки, До свидания!")
-                    exit()
                 count += 1
+                Check_Input_Value.counter_errors(count)
 
 
 select_currency()
