@@ -18,8 +18,8 @@ usd_locator = driver.find_element(By.XPATH,
                                   '/html/body/div[1]/div[1]/main/div[2]/table/tbody/tr[1]/td[4]')
 eur_locator = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/main/div[2]/table/tbody/tr[2]/td[4]')
 
-usd = float(usd_locator.text)
-eur = float(eur_locator.text)
+usd = int(float(usd_locator.text))
+eur = int(float(eur_locator.text))
 driver.close()
 
 """Создание базы данных"""
@@ -137,9 +137,7 @@ class Check_Input_Value:
 
         match count_cr:
             case 1: print("Осталось две попытки")
-        match count_cr:
             case 2: print("Осталась одна попытка")
-        match count_cr:
             case 3:
                 print("Вы потратили все попытки, До свидания!")
                 exit()
@@ -171,6 +169,7 @@ def select_currency():
         if choice_currency.isdigit() and 0 < int(choice_currency) < 4:
             break
         else:
+            print("Не корректный ввод операции")
             count += 1
             Check_Input_Value.counter_errors(count)
             choice_currency = input(text_for_choice_currency)
@@ -191,6 +190,7 @@ def select_sum():
             input_sum = int(input(text_for_input_sum))
             count = 0
         except ValueError:
+            print("Не корректный ввод суммы")
             count += 1
             Check_Input_Value.counter_errors(count)
         else:
@@ -211,7 +211,7 @@ def select_currency_for_change(second_value):
     """Метод выбора валюты на обмен"""
 
     text_for_choice_currency_for_change = "Какую валюту готовы предложить взамен \n 1. RUB \n 2. USD \n 3. EUR \n"
-    text_error_choice = "введите другую валюту"
+    text_error_choice = "Не корректный ввод операции, введите другую валюту"
     count = 0
     while count < 3:
         try:
@@ -219,6 +219,7 @@ def select_currency_for_change(second_value):
             choice_currency_for_change = int(input(text_for_choice_currency_for_change))
             count = 0
         except ValueError:
+            print("Не корректный ввод операции")
             count += 1
             Check_Input_Value.counter_errors(count)
         else:
@@ -239,9 +240,9 @@ def select_currency_pair(currency_1, currency_2):
     # pair rub - usd
 
     if int(currency_1) == 1 and int(currency_2) == 2:
-        data_user_rub = (float(params[0]) - float(input_sum)), 1
+        data_user_rub = int(params[0]) - int(input_sum), 1
         cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
-        data_user_usd = (float(rate.change_rub_usd(float(input_sum)) + float(params[1])), 1)
+        data_user_usd = (int(rate.change_rub_usd(int(input_sum)) + int(params[1])), 1)
         cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
         db.commit()
         print("Операция прошла успешно")
@@ -253,9 +254,9 @@ def select_currency_pair(currency_1, currency_2):
     # pair rub - eur
 
     elif int(currency_1) == 1 and int(currency_2) == 3:
-        data_user_rub = (float(params[0]) - float(input_sum)), 1
+        data_user_rub = (int(params[0]) - int(input_sum)), 1
         cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
-        data_user_eur = (float(rate.change_rub_eur(float(input_sum)) + float(params[2])), 1)
+        data_user_eur = (int(rate.change_rub_eur(int(input_sum)) + int(params[2])), 1)
         cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
         db.commit()
         print("Операция прошла успешно")
@@ -267,9 +268,9 @@ def select_currency_pair(currency_1, currency_2):
     # pair usd - rub
 
     elif int(currency_1) == 2 and int(currency_2) == 1:
-        data_user_usd = (float(params[1]) - float(input_sum)), 1
+        data_user_usd = (int(params[1]) - int(input_sum)), 1
         cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
-        data_user_rub = (float(rate.change_usd_rub(float(input_sum)) + float(params[0])), 1)
+        data_user_rub = (int(rate.change_usd_rub(int(input_sum)) + int(params[0])), 1)
         cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
         db.commit()
         print("Операция прошла успешно")
@@ -281,9 +282,9 @@ def select_currency_pair(currency_1, currency_2):
     # pair usd - eur
 
     elif int(currency_1) == 2 and int(currency_2) == 3:
-        data_user_usd = (float(params[1]) - float(input_sum)), 1
+        data_user_usd = (int(params[1]) - int(input_sum)), 1
         cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
-        data_user_eur = (float(rate.change_usd_eur(float(input_sum)) + float(params[2])), 1)
+        data_user_eur = (int(rate.change_usd_eur(int(input_sum)) + int(params[2])), 1)
         cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
         db.commit()
         print("Операция прошла успешно")
@@ -295,9 +296,9 @@ def select_currency_pair(currency_1, currency_2):
     # pair eur - rub
 
     elif int(currency_1) == 3 and int(currency_2) == 1:
-        data_user_eur = (float(params[2]) - float(input_sum)), 1
+        data_user_eur = (int(params[2]) - int(input_sum)), 1
         cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
-        data_user_rub = (float(rate.change_eur_rub(float(input_sum)) + float(params[0])), 1)
+        data_user_rub = (int(rate.change_eur_rub(int(input_sum)) + int(params[0])), 1)
         cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
         db.commit()
         print("Операция прошла успешно")
@@ -309,9 +310,9 @@ def select_currency_pair(currency_1, currency_2):
     # pair eur - usd
 
     elif int(currency_1) == 3 and int(currency_2) == 2:
-        data_user_eur = (float(params[2]) - float(input_sum)), 1
+        data_user_eur = (int(params[2]) - int(input_sum)), 1
         cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
-        data_user_usd = (float(rate.change_eur_usd(float(input_sum)) + float(params[1])), 1)
+        data_user_usd = (int(rate.change_eur_usd(int(input_sum)) + int(params[1])), 1)
         cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
         db.commit()
         print("Операция прошла успешно")
