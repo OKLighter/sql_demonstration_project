@@ -3,7 +3,12 @@ import sqlite3
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-"""Программа "Обмен валюты" с применением Объектно-Ориентированного Программирования и SQL"""
+"""
+
+Тестовое задание: "Обмен валюты" с применением Объектно-Ориентированного Программирования и SQL
+сделано на одной странице специально, такое условие задания.  
+
+"""
 
 """Считываем актуальные значения курса валют с сайта 'banki.ru'"""
 driver = webdriver.Firefox(executable_path='D:\\selenium_pr\\geckodriver.exe.exe')
@@ -226,99 +231,108 @@ def select_currency_for_change(second_value):
                 choice_currency_for_change = input(text_for_choice_currency_for_change)
 
 
-select_currency()
-select_sum()
-select_currency_for_change(choice_currency)
+def select_currency_pair(currency_1, currency_2):
+    """Выбор валютной пары для обмена"""
 
-"""Запрос в базу данных"""
+    params = Requests_DB.select_all_users_with_params()  # Запрос в базу данных
 
-params = Requests_DB.select_all_users_with_params()
+    # pair rub - usd
 
-# pair rub - usd
+    if int(currency_1) == 1 and int(currency_2) == 2:
+        data_user_rub = (float(params[0]) - float(input_sum)), 1
+        cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
+        data_user_usd = (float(rate.change_rub_usd(float(input_sum)) + float(params[1])), 1)
+        cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
+        db.commit()
+        print("Операция прошла успешно")
+        params = Requests_DB.select_all_users_with_params()
+        user = Users_Balance(params[0], params[1], params[2])
+        Users_Balance.get_balance_rub(user)
+        Users_Balance.get_balance_usd(user)
 
-if int(choice_currency) == 1 and int(choice_currency_for_change) == 2:
-    data_user_rub = (float(params[0]) - float(input_sum)), 1
-    cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
-    data_user_usd = (float(rate.change_rub_usd(float(input_sum)) + float(params[1])), 1)
-    cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
+    # pair rub - eur
+
+    elif int(currency_1) == 1 and int(currency_2) == 3:
+        data_user_rub = (float(params[0]) - float(input_sum)), 1
+        cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
+        data_user_eur = (float(rate.change_rub_eur(float(input_sum)) + float(params[2])), 1)
+        cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
+        db.commit()
+        print("Операция прошла успешно")
+        params = Requests_DB.select_all_users_with_params()
+        user = Users_Balance(params[0], params[1], params[2])
+        Users_Balance.get_balance_rub(user)
+        Users_Balance.get_balance_eur(user)
+
+    # pair usd - rub
+
+    elif int(currency_1) == 2 and int(currency_2) == 1:
+        data_user_usd = (float(params[1]) - float(input_sum)), 1
+        cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
+        data_user_rub = (float(rate.change_usd_rub(float(input_sum)) + float(params[0])), 1)
+        cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
+        db.commit()
+        print("Операция прошла успешно")
+        params = Requests_DB.select_all_users_with_params()
+        user = Users_Balance(params[0], params[1], params[2])
+        Users_Balance.get_balance_usd(user)
+        Users_Balance.get_balance_rub(user)
+
+    # pair usd - eur
+
+    elif int(currency_1) == 2 and int(currency_2) == 3:
+        data_user_usd = (float(params[1]) - float(input_sum)), 1
+        cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
+        data_user_eur = (float(rate.change_usd_eur(float(input_sum)) + float(params[2])), 1)
+        cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
+        db.commit()
+        print("Операция прошла успешно")
+        params = Requests_DB.select_all_users_with_params()
+        user = Users_Balance(params[0], params[1], params[2])
+        Users_Balance.get_balance_usd(user)
+        Users_Balance.get_balance_eur(user)
+
+    # pair eur - rub
+
+    elif int(currency_1) == 3 and int(currency_2) == 1:
+        data_user_eur = (float(params[2]) - float(input_sum)), 1
+        cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
+        data_user_rub = (float(rate.change_eur_rub(float(input_sum)) + float(params[0])), 1)
+        cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
+        db.commit()
+        print("Операция прошла успешно")
+        params = Requests_DB.select_all_users_with_params()
+        user = Users_Balance(params[0], params[1], params[2])
+        Users_Balance.get_balance_eur(user)
+        Users_Balance.get_balance_rub(user)
+
+    # pair eur - usd
+
+    elif int(currency_1) == 3 and int(currency_2) == 2:
+        data_user_eur = (float(params[2]) - float(input_sum)), 1
+        cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
+        data_user_usd = (float(rate.change_eur_usd(float(input_sum)) + float(params[1])), 1)
+        cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
+        db.commit()
+        print("Операция прошла успешно")
+        params = Requests_DB.select_all_users_with_params()
+        user = Users_Balance(params[0], params[1], params[2])
+        Users_Balance.get_balance_eur(user)
+        Users_Balance.get_balance_usd(user)
+
+
+def drop_table():
+    """Удаление таблицы"""
+    cur.execute("""DROP TABLE users_balance""")
     db.commit()
-    print("Операция прошла успешно")
-    params = Requests_DB.select_all_users_with_params()
-    user = Users_Balance(params[0], params[1], params[2])
-    Users_Balance.get_balance_rub(user)
-    Users_Balance.get_balance_usd(user)
+    print("Удаление таблицы")
 
-# pair rub - eur
 
-elif int(choice_currency) == 1 and int(choice_currency_for_change) == 3:
-    data_user_rub = (float(params[0]) - float(input_sum)), 1
-    cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
-    data_user_eur = (float(rate.change_rub_eur(float(input_sum)) + float(params[2])), 1)
-    cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
-    db.commit()
-    print("Операция прошла успешно")
-    params = Requests_DB.select_all_users_with_params()
-    user = Users_Balance(params[0], params[1], params[2])
-    Users_Balance.get_balance_rub(user)
-    Users_Balance.get_balance_eur(user)
+def start_program():
+    select_currency()
+    select_sum()
+    select_currency_for_change(choice_currency)
+    select_currency_pair(choice_currency, choice_currency_for_change)
 
-# pair usd - rub
 
-elif int(choice_currency) == 2 and int(choice_currency_for_change) == 1:
-    data_user_usd = (float(params[1]) - float(input_sum)), 1
-    cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
-    data_user_rub = (float(rate.change_usd_rub(float(input_sum)) + float(params[0])), 1)
-    cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
-    db.commit()
-    print("Операция прошла успешно")
-    params = Requests_DB.select_all_users_with_params()
-    user = Users_Balance(params[0], params[1], params[2])
-    Users_Balance.get_balance_usd(user)
-    Users_Balance.get_balance_rub(user)
-
-# pair usd - eur
-
-elif int(choice_currency) == 2 and int(choice_currency_for_change) == 3:
-    data_user_usd = (float(params[1]) - float(input_sum)), 1
-    cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
-    data_user_eur = (float(rate.change_usd_eur(float(input_sum)) + float(params[2])), 1)
-    cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
-    db.commit()
-    print("Операция прошла успешно")
-    params = Requests_DB.select_all_users_with_params()
-    user = Users_Balance(params[0], params[1], params[2])
-    Users_Balance.get_balance_usd(user)
-    Users_Balance.get_balance_eur(user)
-
-# pair eur - rub
-
-elif int(choice_currency) == 3 and int(choice_currency_for_change) == 1:
-    data_user_eur = (float(params[2]) - float(input_sum)), 1
-    cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
-    data_user_rub = (float(rate.change_eur_rub(float(input_sum)) + float(params[0])), 1)
-    cur.execute("""UPDATE users_balance SET Balance_RUB = ? WHERE UserID = ?""", data_user_rub)
-    db.commit()
-    print("Операция прошла успешно")
-    params = Requests_DB.select_all_users_with_params()
-    user = Users_Balance(params[0], params[1], params[2])
-    Users_Balance.get_balance_eur(user)
-    Users_Balance.get_balance_rub(user)
-
-# pair eur - usd
-
-elif int(choice_currency) == 3 and int(choice_currency_for_change) == 2:
-    data_user_eur = (float(params[2]) - float(input_sum)), 1
-    cur.execute("""UPDATE users_balance SET Balance_EUR = ? WHERE UserID = ?""", data_user_eur)
-    data_user_usd = (float(rate.change_eur_usd(float(input_sum)) + float(params[1])), 1)
-    cur.execute("""UPDATE users_balance SET Balance_USD = ? WHERE UserID = ?""", data_user_usd)
-    db.commit()
-    print("Операция прошла успешно")
-    params = Requests_DB.select_all_users_with_params()
-    user = Users_Balance(params[0], params[1], params[2])
-    Users_Balance.get_balance_eur(user)
-    Users_Balance.get_balance_usd(user)
-
-"""Удаление таблицы"""
-cur.execute("""DROP TABLE users_balance""")
-db.commit()
-print("Удаление таблицы")
+start_program()
