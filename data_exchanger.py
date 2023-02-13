@@ -1,9 +1,24 @@
 import sqlite3
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
 """Программа "Обмен валюты" с применением Объектно-Ориентированного Программирования и SQL"""
 
-"""Создание базы данных"""
 
+"""Считываем актуальные значения курса валют с сайта 'banki.ru'"""
+driver = webdriver.Firefox(executable_path='D:\\selenium_pr\\geckodriver.exe.exe')
+driver.get('https://www.banki.ru/products/currency/cb/')
+driver.get('https://www.banki.ru/products/currency/cb/')
+usd_locator = driver.find_element(By.XPATH,
+                                  '/html/body/div[1]/div[1]/main/div[2]/table/tbody/tr[1]/td[4]')
+eur_locator = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/main/div[2]/table/tbody/tr[2]/td[4]')
+
+usd = float(usd_locator.text)
+eur = float(eur_locator.text)
+driver.close()
+
+"""Создание базы данных"""
 db = sqlite3.connect("exchanger.db")
 print("Connect to data-base")
 cur = db.cursor()
@@ -145,14 +160,14 @@ class Check_Input_Value:
 
 
 """Актуальный курс валюты"""
-rate = Currency(1, 70, 80)
+rate = Currency(1, usd, eur)
 
 """Приветствие"""
 
 print(
     f"Добро пожаловать в наш обменный пункт, курс валют следующий: "
-    f"\n USD = {rate.usd} RUB"
-    f"\n EUR = {rate.eur} RUB"
+    f"\n USD = {round(rate.usd, 2)} RUB"
+    f"\n EUR = {round(rate.eur, 2)} RUB"
     f"\n USD = {round(rate.usd / rate.eur, 2)} EUR"
     f"\n EUR = {round(rate.eur / rate.usd, 2)} USD")
 
