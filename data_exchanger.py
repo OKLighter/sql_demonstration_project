@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 
 """Программа "Обмен валюты" с применением Объектно-Ориентированного Программирования и SQL"""
 
-
 """Считываем актуальные значения курса валют с сайта 'banki.ru'"""
 driver = webdriver.Firefox(executable_path='D:\\selenium_pr\\geckodriver.exe.exe')
 driver.get('https://www.banki.ru/products/currency/cb/')
@@ -106,7 +105,7 @@ class Currency:
     def change_rub_usd(self, value):
         """pair rub - usd"""
         print("Валютная пара rub - usd")
-        return round((value / self.usd), 2)
+        return round(value / self.usd, 2)
 
     def change_usd_rub(self, value):
         """pair usd - rub"""
@@ -126,24 +125,6 @@ class Currency:
 
 class Check_Input_Value:
     """Методы для проверки валидации"""
-
-    @staticmethod
-    def check_input(first_value, second_value, text_error, text_input):
-        """Метод для проверки значений на равно с тремя попытками"""
-
-        count = 0
-        while count < 4:
-            if first_value == second_value:
-                print(text_error)
-                count += 1
-                if count == 2:
-                    print(f"Осталась последняя попытка")
-                if count == 3:
-                    print("Вы потратили все попытки, До свидания!")
-                    exit()
-                second_value = input(text_input)
-            else:
-                break
 
     @staticmethod
     def counter_errors(count_cr):
@@ -176,6 +157,7 @@ choice_currency = 0  # для использования глобальной п
 
 
 def select_currency():
+    """Метод выбора валюты"""
     text_for_choice_currency = "Введите какую валюту желаете обменять: \n 1. RUB \n 2. USD \n 3. EUR \n"
     count = 0
     global choice_currency
@@ -194,6 +176,7 @@ input_sum = 0
 
 
 def select_sum():
+    """Метод выбора суммы"""
     text_for_input_sum = "Какая сумма Вас интересует? \n"
     text_sum_error = "На вашем счету недостаточно средств, введите сумму меньше"
     count = 0
@@ -201,12 +184,13 @@ def select_sum():
         try:
             global input_sum
             input_sum = int(input(text_for_input_sum))
+            count = 0
         except ValueError:
             count += 1
             Check_Input_Value.counter_errors(count)
         else:
             param = Requests_DB.select_all_users_with_params()
-            if input_sum < param[int(choice_currency) - 1]:
+            if input_sum <= param[int(choice_currency) - 1]:
                 break
             else:
                 print(text_sum_error)
@@ -214,19 +198,41 @@ def select_sum():
                 Check_Input_Value.counter_errors(count)
 
 
+"""Выбор валюты на обмен"""
+choice_currency_for_change = 0
+
+
+def select_currency_for_change(second_value):
+    """Метод выбора валюты на обмен"""
+
+    text_for_choice_currency_for_change = "Какую валюту готовы предложить взамен \n 1. RUB \n 2. USD \n 3. EUR \n"
+    text_error_choice = "введите другую валюту"
+    count = 0
+    while count < 3:
+        try:
+            global choice_currency_for_change
+            choice_currency_for_change = int(input(text_for_choice_currency_for_change))
+            count = 0
+        except ValueError:
+            count += 1
+            Check_Input_Value.counter_errors(count)
+        else:
+            if choice_currency_for_change != second_value and 0 < choice_currency_for_change < 4:
+                break
+            else:
+                print(text_error_choice)
+                Check_Input_Value.counter_errors(count)
+                count += 1
+                choice_currency_for_change = input(text_for_choice_currency_for_change)
+
+
 select_currency()
 select_sum()
+select_currency_for_change(choice_currency)
 
-"""Выбор валюты для обмена"""
-
-text_for_choice_currency_for_change = "Какую валюту готовы предложить взамен \n 1. RUB \n 2. USD \n 3. EUR \n"
-text_error_choice = "Невозможно произвести обмен двух одинаковых валют, введите другую валюту"
-choice_currency_for_change = input(text_for_choice_currency_for_change)
-Check_Input_Value.check_input(choice_currency, choice_currency_for_change, text_error_choice,
-                              text_for_choice_currency_for_change)
+"""Запрос в базу данных"""
 
 params = Requests_DB.select_all_users_with_params()
-
 
 # pair rub - usd
 
