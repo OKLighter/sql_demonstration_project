@@ -96,17 +96,17 @@ class Currency:
     def change_usd_eur(self, value):
         """pair usd - eur"""
         print("Валютная пара usd - eur")
-        return round(value / self.eur, 2)
+        return round((self.usd / self.eur) * value, 2)
 
     def change_eur_usd(self, value):
         """pair eur - usd"""
         print("Валютная пара eur - usd")
-        return round(value / self.usd, 2)
+        return round((self.eur / self.usd) * value, 2)
 
     def change_rub_usd(self, value):
         """pair rub - usd"""
         print("Валютная пара rub - usd")
-        return round(value / self.usd, 2)
+        return round((value / self.usd), 2)
 
     def change_usd_rub(self, value):
         """pair usd - rub"""
@@ -227,6 +227,7 @@ Check_Input_Value.check_input(choice_currency, choice_currency_for_change, text_
 
 params = Requests_DB.select_all_users_with_params()
 
+
 # pair rub - usd
 
 if int(choice_currency) == 1 and int(choice_currency_for_change) == 2:
@@ -311,7 +312,7 @@ elif int(choice_currency) == 3 and int(choice_currency_for_change) == 2:
     Users_Balance.get_balance_eur(user)
     Users_Balance.get_balance_usd(user)
 
-# """Удаление таблицы"""
-# cur.execute("""DROP TABLE users_balance""")
-# db.commit()
-# print("Удаление таблицы")
+"""Удаление таблицы"""
+cur.execute("""DROP TABLE users_balance""")
+db.commit()
+print("Удаление таблицы")
