@@ -13,7 +13,6 @@ from selenium.webdriver.common.by import By
 """Считываем актуальные значения курса валют с сайта 'banki.ru'"""
 driver = webdriver.Firefox(executable_path='D:\\selenium_pr\\geckodriver.exe.exe')
 driver.get('https://www.banki.ru/products/currency/cb/')
-driver.get('https://www.banki.ru/products/currency/cb/')
 usd_locator = driver.find_element(By.XPATH,
                                   '/html/body/div[1]/div[1]/main/div[2]/table/tbody/tr[1]/td[4]')
 eur_locator = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/main/div[2]/table/tbody/tr[2]/td[4]')
